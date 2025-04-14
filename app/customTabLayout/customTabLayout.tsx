@@ -20,7 +20,6 @@ export default function CustomTabLayout() {
   if (!isActive('/chat')) {
     return (
       <View style={styles.container}>
-        {/* Conteneur principal pour les 3 premiers onglets */}
         <View style={styles.mainTabContainer}>
           <TouchableOpacity
             style={isActive('/') ? styles.centerTab : styles.tabItem}

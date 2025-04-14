@@ -2,30 +2,42 @@ import { StyleSheet, Text, View, Pressable, Image, ScrollView, SafeAreaView, Tou
 import { Link } from 'expo-router';
 import React from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
+
 
 const index = () => {
   return (
-    <SafeAreaView>
-      <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={styles.Lheader}>
-            <Image source={require('../../assets/images/profil.jpeg')} style={styles.profil} />
-            <View style={styles.name}>
-              <Text style={styles.username}>Homer Simpson</Text>
-              <Text style={styles.grade} >Igit 3</Text>
+    <LinearGradient
+      colors={['#e0f2ff', '#ffffff']}
+      style={{ flex: 1 }}
+    >
+      <SafeAreaView>
+        <ScrollView>
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <View style={styles.Lheader}>
+                <Image source={require('../../assets/images/profil.jpeg')} style={styles.profil} />
+                <View style={styles.name}>
+                  <Text style={styles.username}>Homer Simpson</Text>
+                  <Text style={styles.grade} >Igit 3</Text>
+                </View>
+              </View>
+              <View style={styles.notification}>
+                <TouchableOpacity>
+                <Ionicons name='notifications-outline' size={24} />
+                </TouchableOpacity>
+              </View>
             </View>
+            
+
+
+            
           </View>
-          <View style={styles.notification}>
-            <TouchableOpacity>
-            <Ionicons name='notifications-outline' size={24} />
-            </TouchableOpacity>
-          </View>
-        </View>
-        
-      </View>
-    </ScrollView>
-    </SafeAreaView>
+          
+        </ScrollView>
+      </SafeAreaView>
+
+    </LinearGradient>
   )
 }
 
@@ -72,5 +84,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column', 
     justifyContent: 'space-between',
     paddingLeft:20
-  }
+  },
+  
 })
