@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Stack } from 'expo-router';
-import CustomTabLayout from '../customTabLayout/customTabLayout'; // Importez votre composant personnalisé
+import CustomTabLayout from '../customTabLayout/customTabLayout'; 
 
 export default function Layout() {
   return (
