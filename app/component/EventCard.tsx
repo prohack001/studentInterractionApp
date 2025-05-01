@@ -55,11 +55,11 @@ const EventCard: React.FC = () => {
                 <Text style={styles.date}>{new Date(item.date).toLocaleDateString()}</Text>
               </View>
               <TouchableOpacity style={styles.heartBtn}>
-              <Ionicons
-                name={item.liked ? 'heart' : 'heart-outline'}
-                size={20}
-                color={item.liked ? 'red' : '#000'}
-              />
+                <Ionicons
+                  name={item.liked ? 'heart' : 'heart-outline'}
+                  size={20}
+                  color={item.liked ? 'red' : '#000'}
+                />
               </TouchableOpacity>
             </View>
           );

@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Pressable, Image, ScrollView, SafeAreaView, TouchableOpacity, TextInput } from 'react-native'
-import { Link } from 'expo-router';
-import React, { useEffect, useState } from 'react'
+import {  Link, router, usePathname, useRouter } from 'expo-router';
+import React, { useState, useEffect, } from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import TaskCard from '../component/TaskCard';
 import EventCard from '../component/EventCard';
@@ -12,9 +12,16 @@ import { colors } from '@/utils/colors';
 
 
 
+
 const index = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
+  // Fonction pour naviguer vers un chemin
+    const router = useRouter();
+    const currentPath = usePathname();
+  const navigateTo = (path) => {
+    router.push(path);
+  };
 
   const handleSearch = (query: String) => {
     // setSearchQuery(query)
@@ -29,6 +36,21 @@ const index = () => {
         <View style={styles.container}>
           <WelcomeHeader/>
           <SearchBar/>
+          
+            <View style={styles.notification}>
+              <TouchableOpacity>
+                <Ionicons name='notifications-sharp' size={24} />
+              </TouchableOpacity>
+            </View>
+          
+          <View style={styles.searchBox}>
+            <Ionicons name='search-outline' size={24} />
+            <TextInput style={styles.input}
+              placeholder='Rechercher'
+              placeholderTextColor={"black"}
+              onChangeText={(query) => handleSearch(query)}
+            />
+          </View>
           <View style={styles.class}>
                               <Text style={styles.subclass}>
                               Next class
@@ -38,7 +60,7 @@ const index = () => {
                               </TouchableOpacity>
                   </View>
           <ScrollView horizontal={true}>
-            <TaskCard />
+            <TaskCard/>
           </ScrollView>
           <View style={styles.class}>
             <Text style={styles.subclass}>
@@ -48,11 +70,10 @@ const index = () => {
               <Text>see all</Text>
             </TouchableOpacity>
           </View>
-
-          <View>
             <EventCard />
-          </View>
 
+          
+        
         </View>
       </ScrollView>
     </SafeAreaView>

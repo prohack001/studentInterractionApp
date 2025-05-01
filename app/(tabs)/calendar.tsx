@@ -1,12 +1,15 @@
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import ScheduleCalendar from '../component/calendar'
+import ScheduleCalendarTSX from '../component/calandar2'
 
 export default function calendar() {
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#FFF' }}>
             <View>
-                <Text>calendar</Text>
             </View>
+            <ScheduleCalendar />
+            {/* <ScheduleCalendarTSX/> */}
         </SafeAreaView>
     )
 }
