@@ -7,6 +7,8 @@ export const fonts={
     MeaCulpa:"MeaCulpa-Regular",
     PlayWrite: "PlaywriteMXGuides-Regular",
     SpaceMonoRegular:"SpaceMono-Regular",
+    HelveticaNeue:"HelveticaNeueBlack",
+    HelveticaNeueBold:"HelveticaNeueBold"
 
 
 }

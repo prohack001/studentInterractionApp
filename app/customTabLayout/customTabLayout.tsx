@@ -9,7 +9,10 @@ export default function CustomTabLayout() {
 
   // Fonction pour déterminer si un onglet est actif
   const isActive = (path: string) => {
-    return currentPath === path;
+    if (path === '/') {
+      return currentPath === '/';
+    }
+    return currentPath.startsWith(path);
   };
 
   // Fonction pour naviguer vers un chemin

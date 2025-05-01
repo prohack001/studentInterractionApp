@@ -11,6 +11,8 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Octicons from '@expo/vector-icons/Octicons';
+import ClassCard from '../component/ClassCard';
+import CustomTabLayout from '../customTabLayout/customTabLayout'; 
 
 export default function Subjects() {
   const [activeTab, setActiveTab] = useState("Subjects");
@@ -70,101 +72,13 @@ export default function Subjects() {
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity  onPress={() => handleTabPress("Cours", "screens/CoursScreen")} style={[styles.oneMatterContainer, { backgroundColor: colors.purple}]}>
-        <View style={styles.calculatorContainer}>
+      
 
-          <View style={styles.calculator}>
-            <FontAwesome6 name="calculator" size={32} color="black" />
+        <ClassCard/>
         
-          </View>
-          <View style={styles.doneContainer}>
-            <Text style={styles.done}>Homework   </Text>
-            <AntDesign name="checkcircle" size={24} color="black" />
-          </View>
-        </View>
-        <View style={styles.nomMatter}>
-          <Text style={styles.basic}>Basic mathematic</Text>
-          <Text style={styles.timeText}>Today,  08:15am</Text>
-        </View> 
-        <View style={styles.imageContainer}>
-          <Image style={{borderRadius:7, width:45, height:45}} source={require("../../assets/images/profil.jpeg")} />
-          <Text style={styles.profName}>Kathryn Murphy</Text>
-          
-        </View> 
-
-      </TouchableOpacity>
-
-        <TouchableOpacity style={[styles.oneMatterContainer, { backgroundColor: colors.pink}]}>
-          <View style={styles.calculatorContainer}>
-
-            <View style={styles.calculator}>
-              <FontAwesome6 name="calculator" size={32} color="black" />
-          
-            </View>
-            <View style={styles.doneContainer}>
-              <Text style={styles.done}>Homework   </Text>
-              <Octicons name="dash" size={24} color="black" />
-            </View>
-          </View>
-          <View style={styles.nomMatter}>
-            <Text style={styles.basic}>Basic mathematic</Text>
-            <Text style={styles.timeText}>Today,  08:15am</Text>
-          </View> 
-          <View style={styles.imageContainer}>
-            <Image style={{borderRadius:7, width:45, height:45}} source={require("../../assets/images/profil.jpeg")} />
-            <Text style={styles.profName}>Kathryn Murphy</Text>
-            
-          </View> 
-  
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.oneMatterContainer, { backgroundColor: colors.green}]}>
-          <View style={styles.calculatorContainer}>
-
-            <View style={styles.calculator}>
-              <FontAwesome6 name="calculator" size={32} color="black" />
-          
-            </View>
-            <View style={styles.doneContainer}>
-              <Text style={styles.done}>Homework   </Text>
-              <Octicons name="dash" size={24} color="black" />
-            </View>
-          </View>
-          <View style={styles.nomMatter}>
-            <Text style={styles.basic}>Basic mathematic</Text>
-            <Text style={styles.timeText}>Today,  08:15am</Text>
-          </View> 
-          <View style={styles.imageContainer}>
-            <Image style={{borderRadius:7, width:45, height:45}} source={require("../../assets/images/profil.jpeg")} />
-            <Text style={styles.profName}>Kathryn Murphy</Text>
-            
-          </View> 
-  
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.oneMatterContainer, { backgroundColor: colors.yellow}]}>
-          <View style={styles.calculatorContainer}>
-
-            <View style={styles.calculator}>
-              <FontAwesome6 name="calculator" size={32} color="black" />
-          
-            </View>
-            <View style={styles.doneContainer}>
-              <Text style={styles.done}>Homework   </Text>
-              <Octicons name="dash" size={24} color="white" />
-            </View>
-          </View>
-          <View style={styles.nomMatter}>
-            <Text style={styles.basic}>Basic mathematic</Text>
-            <Text style={styles.timeText}>Today,  08:15am</Text>
-          </View> 
-          <View style={styles.imageContainer}>
-            <Image style={{borderRadius:7, width:45, height:45}} source={require("../../assets/images/profil.jpeg")} />
-            <Text style={styles.profName}>Kathryn Murphy</Text>
-            
-          </View> 
-  
-        </TouchableOpacity>
 
         </ScrollView>
+        <CustomTabLayout/>
       </SafeAreaView>
 
     </>

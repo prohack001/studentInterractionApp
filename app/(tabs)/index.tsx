@@ -1,9 +1,16 @@
 import { StyleSheet, Text, View, Pressable, Image, ScrollView, SafeAreaView, TouchableOpacity, TextInput } from 'react-native'
 import { Link } from 'expo-router';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import TaskCard from '../component/TaskCard';
 import EventCard from '../component/EventCard';
+import WelcomeHeader from '../component/WelcomeHeader';
+import SearchBar from "../component/SearchBar";
+import GlobalApi from "../Shared/GlobalApi";
+import ClassCard from "../component/ClassCard";
+import { colors } from '@/utils/colors';
+
+
 
 const index = () => {
 
@@ -14,43 +21,22 @@ const index = () => {
     console.log(query)
   }
 
+  
 
   return (
     <SafeAreaView>
       <ScrollView>
         <View style={styles.container}>
-          <View style={styles.header}>
-            <View style={styles.Lheader}>
-              <Image
-                source={{ uri: 'https://randomuser.me/api/portraits/men/44.jpg' }}
-                style={styles.profil} />
-              <View style={styles.name}>
-                <Text style={styles.username}>Homer Simpson</Text>
-                <Text style={styles.grade} >Igit 3</Text>
-              </View>
-            </View>
-            <View style={styles.notification}>
-              <TouchableOpacity>
-                <Ionicons name='notifications-sharp' size={24} />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.searchBox}>
-            <Ionicons name='search-outline' size={24} />
-            <TextInput style={styles.input}
-              placeholder='Rechercher'
-              placeholderTextColor={"black"}
-              onChangeText={(query) => handleSearch(query)}
-            />
-          </View>
+          <WelcomeHeader/>
+          <SearchBar/>
           <View style={styles.class}>
-            <Text style={styles.subclass}>
-              Next class
-            </Text>
-            <TouchableOpacity>
-              <Text>see all</Text>
-            </TouchableOpacity>
-          </View>
+                              <Text style={styles.subclass}>
+                              Next class
+                              </Text>
+                              <TouchableOpacity>
+                              <Text>see all</Text>
+                              </TouchableOpacity>
+                  </View>
           <ScrollView horizontal={true}>
             <TaskCard />
           </ScrollView>
@@ -79,7 +65,7 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     // paddingTop: 60,
     padding: 20,
   },

@@ -1,4 +1,6 @@
-import { SafeAreaView, TextInput,ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+
+import { Stack } from 'expo-router';
+import { SafeAreaView, Image,TextInput,ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React,  { useState } from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -8,41 +10,40 @@ import { useRouter } from 'expo-router';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Octicons from '@expo/vector-icons/Octicons';
+import ClassCard from '../component/ClassCard';
+import CustomTabLayout from '../customTabLayout/customTabLayout'; 
 import WelcomeHeader from "../component/WelcomeHeader";
-import HomeworkCard from "../component/HomeworkCard";
 
-
-
-const library = () => {
-
-  const [activeTab, setActiveTab] = useState("HomeWork");
-  const router = useRouter();
-
-  const handleTabPress = (tabName: string, route: string) => {
-    setActiveTab(tabName);
-    router.push(route);
-  };
+export default function Subjects() {
+  const [activeTab, setActiveTab] = useState("Subjects");
+    const router = useRouter();
+  
+    const handleTabPress = (tabName: string, route: string) => {
+      setActiveTab(tabName);
+      router.push(route);
+    };
 
   return (
-    <SafeAreaView>
-      <ScrollView >
-      <WelcomeHeader/>
-      <View style={styles.sujetContainer}>
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+    
+      <SafeAreaView>
+      <ScrollView>
+        <WelcomeHeader/>
+        <View style={styles.sujetContainer}>
+          <TouchableOpacity onPress={() => handleTabPress("Subjects", "screens/SubjectScreen")}>
+            <Text style={[styles.tabText, activeTab === "Subjects" && styles.activeTabText]}>Subjects</Text>
+          </TouchableOpacity>
 
-        
+          <TouchableOpacity onPress={() => handleTabPress("HomeWork", "library")}>
+            <Text style={[styles.tabText, activeTab === "HomeWork" && styles.activeTabText]}>HomeWork</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => handleTabPress("Subjects", "/library/SubjectScreen")}>
-          <Text style={[styles.tabText, activeTab === "Subjects" && styles.activeTabText]}>Subjects</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => handleTabPress("HomeWork", "library")}>
-          <Text style={[styles.tabText, activeTab === "HomeWork" && styles.activeTabText]}>HomeWork</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => handleTabPress("Library", "screens/LibraryScreen")}>
-          <Text style={[styles.tabText, activeTab === "Library" && styles.activeTabText]}>Library</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity onPress={() => handleTabPress("Library", "screens/LibraryScreen")}>
+            <Text style={[styles.tabText, activeTab === "Library" && styles.activeTabText]}>Library</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.searchContainer}>
           <View style={styles.searchBar}>
               <Ionicons name="search-outline" size={20} color="#888" style={styles.searchIcon} />
@@ -73,30 +74,24 @@ const library = () => {
             </TouchableOpacity>
           </View>
         </View>
+      
 
-        <View style={styles.daysContainer}>
-          <View style={styles.dayContainer}>
-            <Text style={styles.tuesday}>Tuesday 6</Text>
-            <Text style={styles.fourTask}>       4 tasks</Text>
-          </View>
-          <View>
-          <FontAwesome6 name="calendar-days" size={28} color="black" />
-          </View>
-        </View>
-        <HomeworkCard/>
-        
+        <ClassCard/>
         
 
-      </ScrollView>
-     
-    </SafeAreaView>
-  )
+        </ScrollView>
+        <CustomTabLayout/>
+      </SafeAreaView>
+
+    </>
+  );
 }
 
-export default library
+
+export default Subjects
 
 const styles = StyleSheet.create({
-  
+
   sujetContainer:{
     flexDirection:"row",
     alignItems:"center",
@@ -165,25 +160,8 @@ const styles = StyleSheet.create({
     flexDirection:"row",
     marginHorizontal:15,
   },
-  daysContainer:{
-    flexDirection:"row",
-    justifyContent: "space-between",
-    marginHorizontal: 25,
-    marginTop:10,
-  },
-  dayContainer:{
-    flexDirection:"row",
-    alignItems:"baseline"
-  },
-  tuesday:{
-    fontWeight:"bold",
-    fontSize:24,
-  },
-  fourTask:{
-    color:"#aaa",
-  },
   oneMatterContainer:{
-    flexDirection:"row",
+    flexDirection:"column",
     marginTop:7,
     padding: 26,
     borderRadius:20,
@@ -197,12 +175,17 @@ const styles = StyleSheet.create({
     padding:10,
     borderRadius:10,
     backgroundColor:colors.white,
-    marginRight:40,
+    marginRight:40
+  },
+  calculatorContainer:{
+    flexDirection:"row",
+    justifyContent:"space-between"
   },
   nomMatter:{
     flexDirection:"column",
     justifyContent:"flex-start",
     alignItems:"flex-start",
+    marginTop:10,
 
   },
   basic:{
@@ -214,16 +197,32 @@ const styles = StyleSheet.create({
   done:{
     fontSize:16,
     fontWeight:"bold",
-    paddingTop:5,
+    
     
   },
   doneContainer:{
     marginLeft:40,
-    padding:10,
-    borderRadius:10,
+    padding:5,
+    paddingTop:10,
+    borderRadius:14,
     backgroundColor:colors.white,
+    height:40,
+    flexDirection:"row",
+    justifyContent:"center",
+    
   },
   timeText:{
     color:colors.lightGray,
+  },
+  imageContainer:{
+    flexDirection:"row",
+    marginTop:10,
+    alignItems:"center"
+    
+  },
+  profName:{
+    fontSize:20,
+    fontWeight:"400",
+    marginLeft: 15,
   }
-})
+});
