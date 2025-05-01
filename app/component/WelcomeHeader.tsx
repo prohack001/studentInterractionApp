@@ -3,9 +3,12 @@ import { Link } from 'expo-router';
 import React from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 
 
 const index = () => {
+
+  const router = useRouter();
   return (
     <LinearGradient
       colors={['#e0f2ff', '#ffffff']}
@@ -23,7 +26,8 @@ const index = () => {
                 </View>
               </View>
               <View style={styles.notification}>
-                <TouchableOpacity>
+                <TouchableOpacity
+                onPress={() => router.push('/(tabs)/Notifications')}>
                 <Ionicons name='notifications-outline' size={24} />
                 </TouchableOpacity>
               </View>

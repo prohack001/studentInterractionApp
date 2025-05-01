@@ -13,6 +13,7 @@ import { colors } from '@/utils/colors';
 
 
 
+
 const index = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
