@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Pressable, Image, ScrollView, SafeAreaView, TouchableOpacity, TextInput } from 'react-native'
-import { Link } from 'expo-router';
+import { Link, router, usePathname, useRouter } from 'expo-router';
 import React, { useState } from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import TaskCard from '../component/TaskCard';
@@ -8,6 +8,12 @@ import EventCard from '../component/EventCard';
 const index = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
+  // Fonction pour naviguer vers un chemin
+    const router = useRouter();
+    const currentPath = usePathname();
+  const navigateTo = (path) => {
+    router.push(path);
+  };
 
   const handleSearch = (query: String) => {
     // setSearchQuery(query)
@@ -30,7 +36,7 @@ const index = () => {
               </View>
             </View>
             <View style={styles.notification}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => navigateTo('/Notifications')}>
                 <Ionicons name='notifications-sharp' size={24} />
               </TouchableOpacity>
             </View>
@@ -64,7 +70,7 @@ const index = () => {
           </View>
 
           <View>
-            <EventCard />
+            <EventCard  />
           </View>
 
         </View>
