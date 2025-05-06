@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ClassType, RootStackParamList } from '../(tabs)/types';
 import { router } from 'expo-router';
-// import { RootStackParamList, ClassType } from './types';
+import { format, addDays, parseISO, startOfWeek, isSameDay, getDay } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 type ScheduleScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Schedule'>;
 
@@ -13,74 +14,261 @@ type DayType = {
   dayShort: string;
   dayLong: string;
   date: string;
+  fullDate: Date;
   isSelected?: boolean;
 };
 
-const days: DayType[] = [
-  { dayShort: 'SUN', dayLong: 'Sunday', date: '04' },
-  { dayShort: 'MON', dayLong: 'Monday', date: '05' },
-  { dayShort: 'TUE', dayLong: 'Tuesday', date: '06' },
-  { dayShort: 'WED', dayLong: 'Wednesday', date: '07' },
-  { dayShort: 'THU', dayLong: 'Thursday', date: '08' },
-  { dayShort: 'FRI', dayLong: 'Friday', date: '09', isSelected: true },
-  { dayShort: 'SAT', dayLong: 'Saturday', date: '10' },
-];
+// Base de données de cours pour différents jours
+const classesDatabase: { [key: string]: ClassType[] } = {
+  // Dimanche (0)
+  '0': [
+    {
+      id: 'sun-1',
+      title: 'Weekend Study Group',
+      startTime: '10:00am',
+      endTime: '11:30am',
+      timeDisplay: '10:00am',
+      backgroundColor: '#e6f7ff',
+    },
+    {
+      id: 'sun-2',
+      title: 'Art & Creativity',
+      startTime: '1:00pm',
+      endTime: '2:30pm',
+      timeDisplay: '1:00pm',
+      backgroundColor: '#fff0f6',
+    }
+  ],
+  
+  // Lundi (1)
+  '1': [
+    {
+      id: 'mon-1',
+      title: 'Basic Mathematics',
+      startTime: '08:00am',
+      endTime: '8:45am',
+      timeDisplay: '8:00am',
+      backgroundColor: '#f8f9fe',
+    },
+    {
+      id: 'mon-2',
+      title: 'French Literature',
+      startTime: '10:00am',
+      endTime: '11:10am',
+      timeDisplay: '10:00am',
+      backgroundColor: '#eafbf3',
+    },
+    {
+      id: 'mon-3',
+      title: 'Physics Lab',
+      startTime: '1:00pm',
+      endTime: '2:30pm',
+      timeDisplay: '1:00pm',
+      backgroundColor: '#fdf2fb',
+    },
+  ],
+  
+  // Mardi (2)
+  '2': [
+    {
+      id: 'tue-1',
+      title: 'Computer Science',
+      startTime: '9:00am',
+      endTime: '10:30am',
+      timeDisplay: '9:00am',
+      backgroundColor: '#e6fffb',
+    },
+    {
+      id: 'tue-2',
+      title: 'English Grammar',
+      startTime: '11:00am',
+      endTime: '12:10pm',
+      timeDisplay: '11:00am',
+      backgroundColor: '#eafbf3',
+    },
+    {
+      id: 'tue-3',
+      title: 'Physical Education',
+      startTime: '2:00pm',
+      endTime: '3:30pm',
+      timeDisplay: '2:00pm',
+      backgroundColor: '#f9f0ff',
+    },
+  ],
+  
+  // Mercredi (3)
+  '3': [
+    {
+      id: 'wed-1',
+      title: 'Advanced Math',
+      startTime: '8:00am',
+      endTime: '9:30am',
+      timeDisplay: '8:00am',
+      backgroundColor: '#f0f5ff',
+    },
+    {
+      id: 'wed-2',
+      title: 'World History',
+      startTime: '10:00am',
+      endTime: '11:45am',
+      timeDisplay: '10:00am',
+      backgroundColor: '#fff2e8',
+    },
+    {
+      id: 'wed-3',
+      title: 'Music',
+      startTime: '1:00pm',
+      endTime: '2:00pm',
+      timeDisplay: '1:00pm',
+      backgroundColor: '#fcffe6',
+    },
+  ],
+  
+  // Jeudi (4)
+  '4': [
+    {
+      id: 'thu-1',
+      title: 'Geography',
+      startTime: '9:00am',
+      endTime: '10:30am',
+      timeDisplay: '9:00am',
+      backgroundColor: '#f9f0ff',
+    },
+    {
+      id: 'thu-2',
+      title: 'Biology',
+      startTime: '11:00am',
+      endTime: '12:30pm',
+      timeDisplay: '11:00am',
+      backgroundColor: '#e6fffb',
+    },
+    {
+      id: 'thu-3',
+      title: 'Foreign Language',
+      startTime: '2:00pm',
+      endTime: '3:30pm',
+      timeDisplay: '2:00pm',
+      backgroundColor: '#fff0f6',
+    },
+  ],
+  
+  // Vendredi (5)
+  '5': [
+    {
+      id: 'fri-1',
+      title: 'Science',
+      startTime: '8:00am',
+      endTime: '9:30am',
+      timeDisplay: '8:00am',
+      backgroundColor: '#fdf9ea',
+    },
+    {
+      id: 'fri-2',
+      title: 'Literature',
+      startTime: '10:00am',
+      endTime: '11:10am',
+      timeDisplay: '10:00am',
+      backgroundColor: '#eafbf3',
+    },
+    {
+      id: 'fri-3',
+      title: 'Chemistry',
+      startTime: '12:00pm',
+      endTime: '1:30pm',
+      timeDisplay: '12:00pm',
+      backgroundColor: '#f0f5ff',
+    },
+    {
+      id: 'fri-4',
+      title: 'Social Studies',
+      startTime: '2:00pm',
+      endTime: '3:15pm',
+      timeDisplay: '2:00pm',
+      backgroundColor: '#fdf2fb',
+    },
+  ],
+  
+  // Samedi (6)
+  '6': [
+    {
+      id: 'sat-1',
+      title: 'Weekend Workshop',
+      startTime: '10:00am',
+      endTime: '12:00pm',
+      timeDisplay: '10:00am',
+      backgroundColor: '#f9f0ff',
+    }
+  ]
+};
 
-const classes: ClassType[] = [
-  {
-    id: '1',
-    title: 'Basic mathematics',
-    startTime: '08:00am',
-    endTime: '8:45am',
-    timeDisplay: '8:00am',
-    backgroundColor: '#f8f9fe',
-  },
-  {
-    id: '2',
-    title: 'English Grammar',
-    startTime: '10:00am',
-    endTime: '11:10am',
-    timeDisplay: '10:00am',
-    backgroundColor: '#eafbf3',
-  },
-  {
-    id: '3',
-    title: 'Science',
-    startTime: '12:00pm',
-    endTime: '12:45pm',
-    timeDisplay: '12:00pm',
-    backgroundColor: '#fdf9ea',
-  },
-  {
-    id: '4',
-    title: 'World history',
-    startTime: '1:00pm',
-    endTime: '1:50pm',
-    timeDisplay: '1:00pm',
-    backgroundColor: '#fdf2fb',
-  },
-];
-
-const timeSlots = ['8:00am', '9:00am', '10:00am', '11:00am', '12:00pm', '1:00pm'];
+const timeSlots = ['8:00am', '9:00am', '10:00am', '11:00am', '12:00pm', '1:00pm', '2:00pm', '3:00pm'];
 
 const ScheduleScreen: React.FC = () => {
   const navigation = useNavigation<ScheduleScreenNavigationProp>();
-  const [selectedDay, setSelectedDay] = useState<string>('09');
+  
+  // Générer les dates dynamiquement pour la semaine en cours
+  const generateWeekDays = (): DayType[] => {
+    const today = new Date();
+    const weekStart = startOfWeek(today, { weekStartsOn: 0 }); // dimanche comme premier jour
+    
+    return Array(7).fill(null).map((_, index) => {
+      const day = addDays(weekStart, index);
+      const isToday = isSameDay(day, today);
+      
+      return {
+        dayShort: format(day, 'EEE', { locale: fr }).toUpperCase(),
+        dayLong: format(day, 'EEEE', { locale: fr }),
+        date: format(day, 'dd'),
+        fullDate: day,
+        isSelected: isToday
+      };
+    });
+  };
+
+  const [days, setDays] = useState<DayType[]>(generateWeekDays());
+  const [selectedDay, setSelectedDay] = useState<string>(format(new Date(), 'dd'));
+  const [selectedFullDate, setSelectedFullDate] = useState<Date>(new Date());
+  const [currentClasses, setCurrentClasses] = useState<ClassType[]>([]);
+
+  // Charger les cours pour le jour actuel lors du montage initial
+  useEffect(() => {
+    const today = new Date();
+    const dayOfWeek = getDay(today).toString();
+    setCurrentClasses(classesDatabase[dayOfWeek] || []);
+  }, []);
 
   const navigateToClassDetail = (classItem: ClassType) => {
-    // navigation.navigate('/screens/ClassDetail', { classInfo: classItem });
-    router.push("screens/ClassDetail");
+    router.push({
+      pathname: "screens/ClassDetail",
+      params: { classId: classItem.id }
+    });
   };
 
   // Handle day selection
-  const handleDaySelect = (date: string) => {
+  const handleDaySelect = (date: string, fullDate: Date) => {
     setSelectedDay(date);
+    setSelectedFullDate(fullDate);
+    
+    // Update days array to reflect selection
+    const updatedDays = days.map(day => ({
+      ...day,
+      isSelected: day.date === date
+    }));
+    
+    setDays(updatedDays);
+    
+    // Mettre à jour les cours selon le jour sélectionné
+    const dayOfWeek = getDay(fullDate).toString();
+    setCurrentClasses(classesDatabase[dayOfWeek] || []);
   };
 
   // Find class for a specific time slot
   const findClassForTimeSlot = (time: string) => {
-    return classes.find(c => c.timeDisplay === time);
+    return currentClasses.find(c => c.timeDisplay === time);
   };
+
+  // Format the current date for display
+  const currentMonthYear = format(selectedFullDate, 'MMMM yyyy', { locale: fr });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -91,6 +279,10 @@ const ScheduleScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
 
+      <View style={styles.currentDateHeader}>
+        <Text style={styles.currentDateText}>{currentMonthYear}</Text>
+      </View>
+
       <View style={styles.weekSection}>
         <View style={styles.weekHeader}>
           <Text style={styles.weekTitle}>This week</Text>
@@ -99,61 +291,70 @@ const ScheduleScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.daysContainer}>
-          {days.map((day) => (
-            <TouchableOpacity
-              key={day.date}
-              style={[
-                styles.dayItem,
-                day.date === selectedDay && styles.selectedDayItem,
-              ]}
-              onPress={() => handleDaySelect(day.date)}
-            >
-              <Text style={[
-                styles.dayText,
-                day.date === selectedDay && styles.selectedDayText
-              ]}>
-                {day.dayShort}
-              </Text>
-              <Text style={[
-                styles.dateText,
-                day.date === selectedDay && styles.selectedDayText
-              ]}>
-                {day.date}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.daysScrollView}>
+          <View style={styles.daysContainer}>
+            {days.map((day) => (
+              <TouchableOpacity
+                key={day.date}
+                style={[
+                  styles.dayItem,
+                  day.date === selectedDay && styles.selectedDayItem,
+                ]}
+                onPress={() => handleDaySelect(day.date, day.fullDate)}
+              >
+                <Text style={[
+                  styles.dayText,
+                  day.date === selectedDay && styles.selectedDayText
+                ]}>
+                  {day.dayShort}
+                </Text>
+                <Text style={[
+                  styles.dateText,
+                  day.date === selectedDay && styles.selectedDayText
+                ]}>
+                  {day.date}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
       </View>
 
-      <ScrollView style={styles.scheduleContainer} showsVerticalScrollIndicator={false}>
-        {timeSlots.map((time) => {
-          const classForTime = findClassForTimeSlot(time);
-          
-          return (
-            <View key={time} style={styles.timeSlotRow}>
+      <View style={styles.timelineContainer}>
+        <View style={styles.timeColumn}>
+          {timeSlots.map((time) => (
+            <View key={time} style={styles.timeSlot}>
               <Text style={styles.timeText}>{time}</Text>
-              <View style={styles.classContainer}>
-                {classForTime ? (
-                  <TouchableOpacity
-                    style={[styles.classCard, { backgroundColor: classForTime.backgroundColor }]}
-                    onPress={() => navigateToClassDetail(classForTime)}
-                  >
-                    <Text style={styles.classTitle}>{classForTime.title}</Text>
-                    <Text style={styles.classTime}>
-                      {classForTime.startTime} - {classForTime.endTime}
-                    </Text>
-                  </TouchableOpacity>
-                ) : (
-                  <View style={styles.emptySlot} />
-                )}
-              </View>
             </View>
-          );
-        })}
-      </ScrollView>
+          ))}
+        </View>
 
-      
+        <ScrollView style={styles.scheduleContainer} showsVerticalScrollIndicator={false}>
+          {timeSlots.map((time) => {
+            const classForTime = findClassForTimeSlot(time);
+            
+            return (
+              <View key={time} style={styles.classSlotRow}>
+                <View style={styles.classContainer}>
+                  {classForTime ? (
+                    <TouchableOpacity
+                      style={[styles.classCard, { backgroundColor: classForTime.backgroundColor }]}
+                      onPress={() => navigateToClassDetail(classForTime)}
+                    >
+                      <Text style={styles.classTitle}>{classForTime.title}</Text>
+                      <Text style={styles.classTime}>
+                        {classForTime.startTime} - {classForTime.endTime}
+                      </Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <View style={styles.emptySlot} />
+                  )}
+                </View>
+              </View>
+            );
+          })}
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
@@ -182,6 +383,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  currentDateHeader: {
+    marginBottom: 10,
+  },
+  currentDateText: {
+    fontSize: 16,
+    color: '#666',
+    fontWeight: '500',
+    textTransform: 'capitalize',
+  },
   weekSection: {
     backgroundColor: '#f9f9f9',
     borderRadius: 16,
@@ -201,19 +411,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
   },
+  daysScrollView: {
+    flexGrow: 0,
+  },
   daysContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    paddingRight: 8,
   },
   dayItem: {
     alignItems: 'center',
     paddingVertical: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
     borderRadius: 20,
+    marginRight: 8,
   },
   selectedDayItem: {
     backgroundColor: '#000',
-    paddingHorizontal: 16,
   },
   dayText: {
     fontSize: 14,
@@ -227,16 +440,30 @@ const styles = StyleSheet.create({
   selectedDayText: {
     color: '#fff',
   },
+  timelineContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    marginTop: 16,
+  },
+  timeColumn: {
+    width: 60,
+    marginRight: 10,
+  },
+  timeSlot: {
+    height: 80,
+    justifyContent: 'flex-start',
+    paddingTop: 8,
+  },
   scheduleContainer: {
     flex: 1,
-    marginTop: 16,
   },
   timeSlotRow: {
     flexDirection: 'row',
-    marginBottom: 16,
+  },
+  classSlotRow: {
+    height: 80,
   },
   timeText: {
-    width: 80,
     fontSize: 14,
     color: '#666',
   },
@@ -244,12 +471,14 @@ const styles = StyleSheet.create({
     flex: 1,
     borderLeftWidth: 1,
     borderLeftColor: '#eee',
-    paddingLeft: 16,
+    paddingLeft: 10,
+    paddingBottom: 8,
   },
   classCard: {
-    padding: 16,
+    padding: 12,
     borderRadius: 12,
-    marginBottom: 8,
+    height: '100%',
+    justifyContent: 'center',
   },
   classTitle: {
     fontSize: 16,
@@ -263,17 +492,7 @@ const styles = StyleSheet.create({
   emptySlot: {
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
-    height: 16,
-  },
-  tabBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-  },
-  tabItem: {
-    alignItems: 'center',
+    height: '100%',
   },
 });
 

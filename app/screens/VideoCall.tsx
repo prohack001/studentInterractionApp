@@ -9,20 +9,193 @@ import {
   SafeAreaView,
   StatusBar,
   Animated,
-  Dimensions
+  Dimensions,
+  Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { router, Stack } from 'expo-router';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
+
+const classesDatabase = {
+  // Dimanche
+  'sun-1': {
+    id: 'sun-1',
+    title: 'Weekend Study Group',
+    startTime: '10:00am',
+    endTime: '11:30am',
+    teacher: 'Prof. Diabaté',
+    thumbnail: 'https://i.pravatar.cc/300?img=28'
+  },
+  'sun-2': {
+    id: 'sun-2',
+    title: 'Art & Creativity',
+    startTime: '1:00pm',
+    endTime: '2:30pm',
+    teacher: 'Mme. Sarr',
+    thumbnail: 'https://i.pravatar.cc/300?img=29'
+  },
+
+  // Lundi
+  'mon-1': {
+    id: 'mon-1',
+    title: 'Basic Mathematics',
+    startTime: '08:00am',
+    endTime: '8:45am',
+    teacher: 'Dr. Ouattara',
+    thumbnail: 'https://i.pravatar.cc/300?img=30'
+  },
+  'mon-2': {
+    id: 'mon-2',
+    title: 'French Literature',
+    startTime: '10:00am',
+    endTime: '11:10am',
+    teacher: 'Mme. Kaboré',
+    thumbnail: 'https://i.pravatar.cc/300?img=31'
+  },
+  'mon-3': {
+    id: 'mon-3',
+    title: 'Physics Lab',
+    startTime: '1:00pm',
+    endTime: '2:30pm',
+    teacher: 'Prof. Bamba',
+    thumbnail: 'https://i.pravatar.cc/300?img=32'
+  },
+
+  // Mardi
+  'tue-1': {
+    id: 'tue-1',
+    title: 'Computer Science',
+    startTime: '9:00am',
+    endTime: '10:30am',
+    teacher: 'M. Zongo',
+    thumbnail: 'https://i.pravatar.cc/300?img=33'
+  },
+  'tue-2': {
+    id: 'tue-2',
+    title: 'English Grammar',
+    startTime: '11:00am',
+    endTime: '12:10pm',
+    teacher: 'Mme. Bah',
+    thumbnail: 'https://i.pravatar.cc/300?img=34'
+  },
+  'tue-3': {
+    id: 'tue-3',
+    title: 'Physical Education',
+    startTime: '2:00pm',
+    endTime: '3:30pm',
+    teacher: 'Coach N’Dour',
+    thumbnail: 'https://i.pravatar.cc/300?img=35'
+  },
+
+  // Default
+  'default': {
+    id: 'default',
+    title: 'Class Session',
+    startTime: '9:00am',
+    endTime: '10:30am',
+    teacher: 'M. Traoré',
+    thumbnail: 'https://i.pravatar.cc/300?img=28'
+  }
+};
+
+const participantsDatabase = {
+  'sun-1': [
+    { id: 1, name: 'Issa Koné', image: 'https://i.pravatar.cc/150?img=8' },
+    { id: 2, name: 'Fatou Diallo', image: 'https://i.pravatar.cc/150?img=5' },
+    { id: 3, name: 'Mohamed Coulibaly', image: 'https://i.pravatar.cc/150?img=13' },
+    { id: 4, name: 'Aminata Sow', image: 'https://i.pravatar.cc/150?img=23' },
+    { id: 5, name: 'Blaise Nguessan', image: 'https://i.pravatar.cc/150?img=11' },
+  ],
+  'sun-2': [
+    { id: 1, name: 'Adjara Sanou', image: 'https://i.pravatar.cc/150?img=24' },
+    { id: 2, name: 'Idrissa Keita', image: 'https://i.pravatar.cc/150?img=12' },
+    { id: 3, name: 'Yacine Sow', image: 'https://i.pravatar.cc/150?img=21' },
+    { id: 4, name: 'Khadija Traoré', image: 'https://i.pravatar.cc/150?img=30' },
+  ],
+  'mon-1': [
+    { id: 1, name: 'Mariam Kéïta', image: 'https://i.pravatar.cc/150?img=31' },
+    { id: 2, name: 'Abdoulaye Tapsoba', image: 'https://i.pravatar.cc/150?img=15' },
+    { id: 3, name: 'Awa Cissé', image: 'https://i.pravatar.cc/150?img=25' },
+  ],
+  'mon-2': [
+    { id: 1, name: 'Seydou Kamara', image: 'https://i.pravatar.cc/150?img=17' },
+    { id: 2, name: 'Nafissatou Diop', image: 'https://i.pravatar.cc/150?img=33' },
+    { id: 3, name: 'Oumar Sagna', image: 'https://i.pravatar.cc/150?img=18' },
+    { id: 4, name: 'Assétou Fofana', image: 'https://i.pravatar.cc/150?img=34' },
+    { id: 5, name: 'Djibril Traoré', image: 'https://i.pravatar.cc/150?img=19' },
+  ],
+  'default': [
+    { id: 1, name: 'Issa Koné', image: 'https://i.pravatar.cc/150?img=8' },
+    { id: 2, name: 'Fatou Diallo', image: 'https://i.pravatar.cc/150?img=5' },
+    { id: 3, name: 'Mohamed Coulibaly', image: 'https://i.pravatar.cc/150?img=13' },
+  ]
+};
+
+const chatDatabase = {
+  'sun-1': [
+    { id: 1, name: 'Issa Koné', time: '9:20am', message: 'Est-ce que tout le monde est prêt pour le projet ?' },
+  ],
+  'sun-2': [
+    { id: 1, name: 'Adjara Sanou', time: '1:05pm', message: 'Quelqu’un a pensé à ramener des pinceaux ?' },
+  ],
+  'mon-1': [
+    { id: 1, name: 'Mariam Kéïta', time: '8:10am', message: 'On peut revoir les divisions ?' },
+  ],
+  'mon-2': [
+    { id: 1, name: 'Seydou Kamara', time: '10:15am', message: 'On est à quelle page dans le livre ?' },
+  ],
+  'tue-2': [
+    { id: 1, name: 'Ina PARE', time: '9:27am', message: 'Dieu merci c\'est le dernier jour de cours 😂' },
+  ],
+  'default': [
+    { id: 1, name: 'Chat', time: '9:00am', message: 'Bienvenue en classe ! Veuillez patienter pour le début du cours.' },
+  ]
+};
+
 
 export default function EnhancedVideoCallScreen() {
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isHandRaised, setIsHandRaised] = useState(false);
   const [message, setMessage] = useState('');
+  const [callDuration, setCallDuration] = useState('00:00:00');
+  
+  // Get the class ID from URL params
+  const params = useLocalSearchParams();
+  const classId = params.classId ? String(params.classId) : 'default';
+  
+  // Get class info based on ID
+  const classInfo = classesDatabase[classId] || classesDatabase['default'];
+  const participants = participantsDatabase[classId] || participantsDatabase['default'];
+  const chatMessages = chatDatabase[classId] || chatDatabase['default'];
 
-  // Animation pour la main levée
+  // Animation for raised hand
   const handAnimation = new Animated.Value(0);
 
+  // Call duration timer
+  useEffect(() => {
+    let seconds = 0;
+    let minutes = 0;
+    let hours = 0;
+    
+    const timer = setInterval(() => {
+      seconds++;
+      if (seconds === 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes === 60) {
+          minutes = 0;
+          hours++;
+        }
+      }
+      
+      const formatTime = (val) => val.toString().padStart(2, '0');
+      setCallDuration(`${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`);
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  }, []);
+
+  // Raised hand animation
   useEffect(() => {
     if (isHandRaised) {
       Animated.loop(
@@ -49,22 +222,30 @@ export default function EnhancedVideoCallScreen() {
     outputRange: [1, 1.2]
   });
 
-  // Données des participants
-  const participants = [
-    { id: 1, name: 'Jake Wilson', image: 'https://i.pravatar.cc/150?img=8' },
-    { id: 2, name: 'Sarah Chen', image: 'https://i.pravatar.cc/150?img=5' },
-    { id: 3, name: 'Michael Smith', image: 'https://i.pravatar.cc/150?img=13' },
-    { id: 4, name: 'Laura Jones', image: 'https://i.pravatar.cc/150?img=23' },
-    { id: 5, name: 'Carlos Diaz', image: 'https://i.pravatar.cc/150?img=11' },
-    // Plus de participants...
-  ];
-
   const sendMessage = () => {
     if (message.trim() !== '') {
-      // Logique pour envoyer le message
+      // In a real app, this would send the message to a backend
       console.log("Message sent:", message);
       setMessage('');
     }
+  };
+
+  const handleEndCall = () => {
+    Alert.alert(
+      "End Call",
+      "Are you sure you want to leave this class?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Leave",
+          onPress: () => router.back(),
+          style: "destructive"
+        }
+      ]
+    );
   };
 
   return (
@@ -73,30 +254,33 @@ export default function EnhancedVideoCallScreen() {
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="dark-content" />
 
-        {/* Zone principale de l'appel vidéo */}
+        {/* Main video call area */}
         <View style={styles.callContainer}>
-          {/* Image principale */}
+          {/* Main video - teacher */}
           <Image
-            source={{ uri: 'https://i.pravatar.cc/300?img=28' }}
+            source={{ uri: classInfo.thumbnail }}
             style={styles.mainVideo}
             resizeMode="cover"
           />
 
-          {/* Overlay semi-transparent pour les contrôles */}
+          {/* Semi-transparent overlay for controls */}
           <View style={styles.videoOverlay}>
-            {/* Header de l'appel avec titre et durée */}
+            {/* Call header with title and duration */}
             <View style={styles.callHeader}>
-              <TouchableOpacity style={styles.backButton} onPress={()=>{router.back()}}>
+              <TouchableOpacity style={styles.backButton} onPress={handleEndCall}>
                 <Ionicons name="chevron-back" size={24} color="white" />
               </TouchableOpacity>
               <View>
-                <Text style={styles.callTitle}>English Grammar</Text>
-                <Text style={styles.callDuration}>00:22:25</Text>
+                <Text style={styles.callTitle}>{classInfo.title}</Text>
+                <Text style={styles.callDuration}>{callDuration}</Text>
+              </View>
+              <View style={styles.teacherInfo}>
+                <Text style={styles.teacherName}>{classInfo.teacher}</Text>
               </View>
             </View>
           </View>
 
-          {/* Miniature de l'utilisateur */}
+          {/* Self view (your camera) */}
           <View style={styles.selfViewContainer}>
             <Image
               source={{ uri: 'https://i.pravatar.cc/150?img=32' }}
@@ -110,7 +294,7 @@ export default function EnhancedVideoCallScreen() {
             )}
           </View>
 
-          {/* Contrôles de l'appel */}
+          {/* Call controls */}
           <View style={styles.callControls}>
             <TouchableOpacity
               style={[styles.controlButton, isMuted && styles.controlActive]}
@@ -134,10 +318,17 @@ export default function EnhancedVideoCallScreen() {
                 <Ionicons name="hand-right" size={24} color="white" />
               </Animated.View>
             </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={[styles.controlButton, styles.endCallButton]}
+              onPress={handleEndCall}
+            >
+              <Ionicons name="call" size={24} color="white" />
+            </TouchableOpacity>
           </View>
         </View>
 
-        {/* Section des participants */}
+        {/* Participants section */}
         <View style={styles.participantsContainer}>
           <TouchableOpacity style={styles.addParticipant}>
             <Ionicons name="add" size={24} color="black" />
@@ -154,24 +345,28 @@ export default function EnhancedVideoCallScreen() {
             ))}
           </View>
 
-          <TouchableOpacity style={styles.moreParticipants}>
-            <Text style={styles.moreParticipantsText}>+{participants.length - 3}</Text>
-          </TouchableOpacity>
+          {participants.length > 3 && (
+            <TouchableOpacity style={styles.moreParticipants}>
+              <Text style={styles.moreParticipantsText}>+{participants.length - 3}</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
-        {/* Zone de chat */}
+        {/* Chat area */}
         <View style={styles.chatContainer}>
-          <View style={styles.chatMessage}>
-            <View style={styles.messageHeader}>
-              <Text style={styles.senderName}>Ina PARE</Text>
-              <Text style={styles.messageTime}>9:27am</Text>
+          {chatMessages.map(msg => (
+            <View key={msg.id} style={styles.chatMessage}>
+              <View style={styles.messageHeader}>
+                <Text style={styles.senderName}>{msg.name}</Text>
+                <Text style={styles.messageTime}>{msg.time}</Text>
+              </View>
+              <Text style={styles.messageContent}>
+                {msg.message}
+              </Text>
             </View>
-            <Text style={styles.messageContent}>
-              Dieu merci c'est le dernier jour de cours 😂
-            </Text>
-          </View>
+          ))}
 
-          {/* Input de message */}
+          {/* Message input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity style={styles.attachButton}>
               <Ionicons name="attach" size={24} color="#555" />
@@ -205,24 +400,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F2F2',
   },
-  statusBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: 5,
-    paddingBottom: 10,
-  },
-  timeText: {
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  statusIcons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconSpacing: {
-    marginLeft: 5,
-  },
   callContainer: {
     width: '100%',
     height: '60%',
@@ -243,6 +420,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
+    justifyContent: 'space-between',
   },
   backButton: {
     width: 40,
@@ -262,6 +440,17 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 14,
     opacity: 0.8,
+  },
+  teacherInfo: {
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  teacherName: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '500',
   },
   selfViewContainer: {
     position: 'absolute',
@@ -308,6 +497,10 @@ const styles = StyleSheet.create({
   },
   controlActive: {
     backgroundColor: '#FF3B30',
+  },
+  endCallButton: {
+    backgroundColor: '#FF3B30',
+    transform: [{ rotate: '135deg' }],
   },
   participantsContainer: {
     flexDirection: 'row',
@@ -396,13 +589,5 @@ const styles = StyleSheet.create({
   },
   sendButton: {
     padding: 8,
-  },
-  homeIndicator: {
-    width: 140,
-    height: 5,
-    backgroundColor: '#000',
-    borderRadius: 3,
-    alignSelf: 'center',
-    marginVertical: 8,
   },
 });
