@@ -13,16 +13,18 @@ import {
   import { LinearGradient } from 'expo-linear-gradient';
   import { colors } from '@/utils/colors';
   import { fonts } from '@/utils/fonts';
-  import { useRouter } from 'expo-router';
+  import {  useRouter } from 'expo-router';
   import AntDesign from '@expo/vector-icons/AntDesign';
   import Entypo from '@expo/vector-icons/Entypo';
   import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
   import WelcomeHeader from '../component/WelcomeHeader';
   import GlobalApi from '../Shared/GlobalApi';
+  import { useNavigation } from '@react-navigation/native';
   
   export default function HomeWork () {
     const [activeTab, setActiveTab] = useState('HomeWork');
     const router = useRouter();
+    const navigation=useNavigation();
 
     const [homeworkCard,setHomeworkCard]= useState([])
     
@@ -55,6 +57,14 @@ import {
         };
 
      
+    // Modifiez la fonction onPressHomework pour naviguer avec les paramètres
+const onPressHomework = (homework) => {
+    console.log("Homework ", homework);
+    router.push({
+        pathname: "/screens/Homework-details",
+        params: homework // Passez tout l'objet homework comme paramètre
+  });
+}
   
     return (
         <SafeAreaView>
@@ -65,7 +75,8 @@ import {
                     horizontal={false}
                     showsVerticalScrollIndicator={false}
                     renderItem={({ item }) => (
-                        <View style={styles.container}>
+                        <TouchableOpacity style={styles.container}
+                        onPress={()=>onPressHomework(item)}>
                         <View style={[styles.oneMatterContainer, { backgroundColor: colors[item.couleur]  || colors.purple }]}>
                             <View style={styles.calculator}>
                             <FontAwesome6 name={item.iconName} size={32} color="black" />
@@ -82,7 +93,7 @@ import {
                         </View>
 
                         
-                        </View>
+                        </TouchableOpacity>
                     )}
                 />
             </ScrollView>

@@ -1,14 +1,51 @@
 import { StyleSheet, Text, View, Pressable, Image, ScrollView, SafeAreaView, TouchableOpacity, TextInput } from 'react-native'
 import { Link } from 'expo-router';
-import React from 'react'
+import React, { useState, useEffect }  from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import GlobalApi from '../Shared/GlobalApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const index = () => {
 
   const router = useRouter();
+  const [userData, setUserData] = useState(null);
+  
+
+   useEffect(()=>{
+        getAuthenticatedUser();
+          
+          
+            },[])
+
+            //  const getAuthenticatedUser=async()=>{
+            //             try{
+                            
+            //                 const result=(await GlobalApi.getAuthenticatedUser()).data;
+                            
+            //                 console.log("User data ",result);
+            //                 setUserData(result); 
+            //             } catch (error) {
+            //                 console.error("Erreur dans getAuthenticatedUser():", error);
+            //             }
+            //         };
+  
+            const getAuthenticatedUser = async () => {
+              try {
+                const token = await AsyncStorage.getItem('userToken');
+                const response = await GlobalApi.getAuthenticatedUser(token);
+                const result = response.data;
+            
+                console.log("User data ", result);
+                setUserData(result);
+              } catch (error) {
+                console.error("Erreur dans getAuthenticatedUser():", error);
+              }
+            };
+            
+  
   return (
     <LinearGradient
       colors={['#e0f2ff', '#ffffff']}
@@ -19,10 +56,16 @@ const index = () => {
           <View style={styles.container}>
             <View style={styles.header}>
               <View style={styles.Lheader}>
-                <Image source={require('../../assets/images/profil.jpeg')} style={styles.profil} />
+                <TouchableOpacity onPress={() => router.push('/screens/ProfileScreen')}>
+                <Image
+                  source={userData?.avatar ? { uri: userData?.avatar } : require('../../assets/images/react-logo.png')}
+                  style={styles.profil}
+                />
+
+                </TouchableOpacity>
                 <View style={styles.name}>
-                  <Text style={styles.username}>Homer Simpson</Text>
-                  <Text style={styles.grade} >Igit 3</Text>
+                  <Text style={styles.username}>{userData?.username || 'Utilisateur'} </Text>
+                  <Text style={styles.grade} >{userData?.classe || 'Classe'} </Text>
                 </View>
               </View>
               <View style={styles.notification}>

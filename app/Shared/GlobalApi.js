@@ -15,8 +15,21 @@ const getHomework=()=>api.get("/homeworks?populate=*");
 
 const getEvent=()=>api.get("/events?populate=*")
 
+const getAuthenticatedUser = (token) => 
+  api.get("/users/me", {}, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+const getHomeworkById= (id) => {
+    return axiosInstance.get(`/homeworks/${id}?populate=*`);
+};
+
 export default{
     getClass,
     getHomework,
-    getEvent
+    getEvent,
+    getAuthenticatedUser,
+    getHomeworkById
 }

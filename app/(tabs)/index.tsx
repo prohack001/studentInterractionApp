@@ -38,20 +38,7 @@ const index = () => {
           <WelcomeHeader/>
           <SearchBar/>
           
-            <View style={styles.notification}>
-              <TouchableOpacity>
-                <Ionicons name='notifications-sharp' size={24} />
-              </TouchableOpacity>
-            </View>
-          
-          <View style={styles.searchBox}>
-            <Ionicons name='search-outline' size={24} />
-            <TextInput style={styles.input}
-              placeholder='Rechercher'
-              placeholderTextColor={"black"}
-              onChangeText={(query) => handleSearch(query)}
-            />
-          </View>
+            
           <View style={styles.class}>
                               <Text style={styles.subclass}>
                               Next class

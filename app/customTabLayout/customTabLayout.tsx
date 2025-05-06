@@ -30,7 +30,7 @@ export default function CustomTabLayout() {
           >
             <Ionicons
               name={isActive('/') ? 'home-sharp' : 'home-outline'}
-              color={isActive('/') ? '#F00' : 'black'}
+              color={isActive('/') ? '#00F' : 'black'}
               size={24}
             />
           </TouchableOpacity>
@@ -42,7 +42,7 @@ export default function CustomTabLayout() {
           >
             <Ionicons
               name={isActive('/calendar') ? 'calendar-sharp' : 'calendar-outline'}
-              color={isActive('/calendar') ? '#F00' : 'black'}
+              color={isActive('/calendar') ? '#00F' : 'black'}
               size={24}
             />
           </TouchableOpacity>
@@ -53,7 +53,7 @@ export default function CustomTabLayout() {
           >
             <Ionicons
               name={isActive('/library') ? 'library-sharp' : 'library-outline'}
-              color={isActive('/library') ? '#F00' : 'black'}
+              color={isActive('/library') ? '#00F' : 'black'}
               size={24}
             />
           </TouchableOpacity>
@@ -67,7 +67,7 @@ export default function CustomTabLayout() {
           >
             <Ionicons
               name={isActive('/chat') ? 'chatbubble-sharp' : 'chatbubble-outline'}
-              color={isActive('/chat') ? '#F00' : 'black'}
+              color={isActive('/chat') ? '#00F' : 'black'}
 
               size={24}
             />
@@ -84,7 +84,7 @@ export default function CustomTabLayout() {
         >
           <Ionicons
               name={isActive('/chat') ? 'chatbubbles-sharp' : 'chatbubbles-outline'}
-              color={isActive('/chat') ? '#F00' : 'black'}
+              color={isActive('/chat') ? '#00F' : 'black'}
 
               size={24}
             />
