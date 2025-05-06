@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.cherry_expo.StudentInteractionApp"
     },
     "web": {
       "bundler": "metro",
@@ -26,7 +27,6 @@
       "enabled": true,
       "fallbackToCacheTimeout": 0
     },
-
     "plugins": [
       "expo-router",
       [
@@ -41,6 +41,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "d89b1a27-3fbd-4cdd-b3e9-6cfe73ebd0bd"
+      }
+    },
+    "owner": "cherry_expo"
   }
 }

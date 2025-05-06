@@ -832,9 +832,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   activeVideoItem: {
-    backgroundColor: `${colors.purple}08`,
+    backgroundColor: colors.purple,
     borderWidth: 1,
-    borderColor: `${colors.purple}20`,
+    borderColor: "rgb(228, 228, 251)",
+    borderEndWidth: 20,
   },
   iconContainer: {
     width: 40,
